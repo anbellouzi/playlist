@@ -6,12 +6,17 @@ from datetime import datetime
 
 
 
-client = MongoClient()
-db = client.Playlister
-playlists = db.playlists
-comments = db.comments
+# client = MongoClient()
+# db = client.Playlister
+# playlists = db.playlists
+# comments = db.comments
 # db = client.get_default_database()
 
+host = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/Playlister')
+client = MongoClient(host=f'{host}?retryWrites=false')
+db = client.get_default_database()
+playlists = db.playlists
+comments = db.comments
 
 app = Flask(__name__)
 
@@ -90,12 +95,9 @@ def comments_delete(comment_id):
     comments.delete_one({'_id': ObjectId(comment_id)})
     return redirect(url_for('playlists_show', playlist_id=comment.get('playlist_id')))
 
-host = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/Playlister')
-client = MongoClient(host=f'{host}?retryWrites=false')
-db = client.get_default_database()
-playlists = db.playlists
+
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
     app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT', 5000))
